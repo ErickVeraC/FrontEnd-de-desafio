@@ -27,35 +27,27 @@ const handleLogin = async (event) => {
   }
 };
 
-function validateSession() {
-  let hasToken = localStorage.getItem("token");
-  let createPostBtn = document.getElementById("createPostBtn");
-  let notifications = document.getElementById("notifications");
-  let avatar = document.getElementById("avatar");
-  let createAccount = document.getElementById("createAccount");
-  let logOutBtn = document.getElementById("logOutBtn");
-  let cardlogin = document.getElementById("card-login");
-
-  if (!hasToken) {
-    if (createPostBtn) createPostBtn.classList.remove("d-md-block");
-    if (avatar) avatar.classList.add("d-none");
-    if (notifications) notifications.classList.add("d-none");
-    if (createAccount) createAccount.classList.add("d-md-block");
-    if (logOutBtn) logOutBtn.classList.add("d-none");
-    if (cardlogin) cardlogin.classList.add("d-md-block");
-  } else {
-    if (createPostBtn) createPostBtn.classList.add("d-md-block");
-    if (avatar) avatar.classList.remove("d-none");
-    if (notifications) notifications.classList.remove("d-none");
-    if (createAccount) createAccount.classList.remove("d-md-block");
-    if (logOutBtn) logOutBtn.classList.remove("d-none");
-    if (cardlogin) cardlogin.classList.add("d-none");
-  }
-}
-
-function logIn() {
-  localStorage.setItem("token", "exampleToken");
-  validateSession();
+// Enviar solicitud POST para obtener el token
+export function getToken(email, password) {
+  fetch("https://desafio-backend-jnku.onrender.com/auth/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("userId", data.id);
+        validateSession(); // Actualizar la sesión
+        window.location.href = "/"; // Redirigir a la página principal
+      } else {
+        alert("Credenciales incorrectas.");
+      }
+    })
+    .catch((error) => console.error("Error:", error));
 }
 
 function logOut() {
