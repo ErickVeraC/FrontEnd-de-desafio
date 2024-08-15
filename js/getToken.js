@@ -1,6 +1,32 @@
 // Imports necesarios desde validateSession.js
 import { validateSession } from "./validateSession.js";
 
+// Función para manejar el envío del formulario
+const handleLogin = async (event) => {
+  event.preventDefault();
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    const token = await login(email, password);
+    localStorage.setItem("authToken", token);
+
+    const userId = parseJwt(token).id;
+    localStorage.setItem("userId", userId);
+
+    const userProfile = await getUserProfile(token);
+    console.log(userProfile);
+
+    window.location.href = "../index.html";
+  } catch (error) {
+    console.error("There was a problem with the login operation:", error);
+
+    document.getElementById("email").value = "";
+    document.getElementById("password").value = "";
+  }
+};
+
 function validateSession() {
   let hasToken = localStorage.getItem("token");
   let createPostBtn = document.getElementById("createPostBtn");
