@@ -1,6 +1,6 @@
+function logout() {
+  localStorage.removeItem("token");
+  validateSession();
+}
 
-export const logOut = () => {
-    localStorage.removeItem("token");
-    validateSession();
-};
-
+export { logout };
